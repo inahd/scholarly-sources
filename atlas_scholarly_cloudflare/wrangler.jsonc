@@ -1,7 +1,14 @@
 {
+  // Worker name must match the deployed Worker ("scholarly-sources") so Workers Builds,
+  // `wrangler deploy` and the production URL all refer to the same script.
   "name": "scholarly-sources",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
-  "observability": {"enabled": true}
+  "observability": { "enabled": true },
+  // Runtime deployment identifier: exposes this version's id and timestamp to the Worker.
+  "version_metadata": { "binding": "CF_VERSION_METADATA" },
+  // Runs on every `wrangler deploy` (Workers Builds, CLI): stamps the source commit into the bundle,
+  // then typechecks and runs the tests. A failure here aborts the deploy, so untested code never ships.
+  "build": { "command": "node scripts/build-info.mjs && npx tsc --noEmit && node --test tests/*.test.mjs" }
 }

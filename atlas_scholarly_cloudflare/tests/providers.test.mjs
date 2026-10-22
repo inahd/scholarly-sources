@@ -1,11 +1,22 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-const p=readFileSync(new URL('../src/providers.ts',import.meta.url),'utf8');
-const s=readFileSync(new URL('../src/index.ts',import.meta.url),'utf8');
-test('only fixed upstream service roots used',()=>{assert.match(p,/https:\/\/www\.wikidata\.org/);assert.match(p,/https:\/\/api\.crossref\.org/);assert.doesNotMatch(p,/fetch\(query/)});
-test('three read-only MCP tools registered',()=>{for(const tool of ['list_source_portals','find_catalog_entries','search_scholarly_literature','seti_by_work_beta'])assert.ok(s.includes(`registerTool("${tool}"`));});
+import test from "node:test";
+import assert from "node:assert/strict";
+import { providers as P } from "./helpers.mjs";
 
-test('MCP entry uses .fetch',()=>{assert.match(s,/handler\.fetch\(request\)/);});
-test('SETI beta uses fixed upstream and declared uncertainty',()=>{assert.match(p,/https:\/\/panditya\.info\/api\/seti\/by_work/);assert.match(p,/unverified_schema_review_required/)});
-test('Crossref filters unrelated titles',()=>{assert.match(p,/relevantCrossref\(query,results\)/)});
+test("fixed upstream roots only", () => {
+  assert.ok(P.catalogUrl("x").startsWith("https://www.wikidata.org/"));
+  assert.ok(P.researchUrl("x").startsWith("https://api.crossref.org/"));
+  assert.ok(P.setiUrl("seti/by_work", [1, 2]).startsWith("https://panditya.info/api/seti/by_work?ids=1,2"));
+});
+test("relevance filter: keeps matches on title or container, drops front matter and unrelated", () => {
+  const e = [{ title: "Spanda in Kashmir Shaivism" }, { title: "Bibliography", container: "Kashmir Shaivism" }, { title: "Notes on rivers" }, { title: "Essay", container: "Journal of Kashmir Shaivism" }];
+  assert.deepEqual(P.relevantCrossref("Kashmir Shaivism", e).map(x => x.title), ["Spanda in Kashmir Shaivism", "Essay"]);
+  assert.deepEqual(P.relevantCrossref("the of and", e), []);
+  assert.deepEqual(P.relevantCrossref("Śaiva Śivasūtra Kashmir", [{ title: "Kashmir Saiva" }]).length, 1);
+});
+test("parseSetiByWork accepts both observed shapes and rejects anything else", () => {
+  assert.ok(P.parseSetiByWork({ "1": { A: ["u"], B: { f: ["v"] } } }));
+  for (const bad of [null, [], "x", { x: {} }, { "1": [] }, { "1": { A: 3 } }, { "1": { A: { f: "u" } } }]) assert.equal(P.parseSetiByWork(bad), null);
+});
+test("setiByWork rejects invalid id lists locally", async () => {
+  for (const ids of [[], [0], [1.2], Array.from({ length: 21 }, (_, i) => i + 1)]) await assert.rejects(() => P.setiByWork(ids, async () => { throw new Error("must not fetch"); }), RangeError);
+});

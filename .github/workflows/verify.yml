@@ -1,0 +1,34 @@
+# Deployment itself is done by the existing Cloudflare Workers Builds integration (push to main).
+# This workflow adds no deploy path and needs no secrets: it re-runs the tests, then independently
+# checks the PUBLIC production endpoints until they report exactly this commit.
+name: verify
+on:
+  push:
+    branches: [main]
+    paths: ["atlas_scholarly_cloudflare/**", ".github/workflows/verify.yml"]
+  workflow_dispatch:
+concurrency:
+  group: verify-production
+  cancel-in-progress: true   # a newer push supersedes the commit this run is waiting for
+defaults:
+  run:
+    working-directory: atlas_scholarly_cloudflare
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: atlas_scholarly_cloudflare/package-lock.json }
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+  live:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      # Waits up to 10 minutes for Cloudflare to deploy this exact commit; fails if production stays on another commit.
+      - run: node scripts/verify-live.mjs https://scholarly-sources.inahd.workers.dev --commit "${{ github.sha }}" --wait 600

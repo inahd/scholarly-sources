@@ -1,41 +1,44 @@
-# Atlas Scholarly Sources — Cloudflare MCP pilot
+# Atlas Scholarly Sources — Cloudflare MCP Worker (v0.2)
 
-A **read-only**, stateless remote MCP Worker. Independent of your Atlas box and corpus; does not alter Atlas.
+Read-only, stateless remote MCP server. Independent of the Atlas machine and corpus. Unauthenticated: do not add private sources or secrets.
 
-## Current tools (v0.2)
+- Worker `scholarly-sources` · `https://scholarly-sources.inahd.workers.dev` · MCP `/mcp` · health `/health`
+- MCP handler: `createMcpHandler(...)` from `@modelcontextprotocol/server`, served through its `.fetch(request)` interface (legacy `initialize` and modern `server/discover` both answered).
 
-- `list_source_portals`: curated links to Pāṇḍitya/SETI, Pandit Project, Muktabodha, GRETIL, SARIT, and VedaWeb.
-- `find_catalog_entries`: live Wikidata entity discovery for Sanskrit title variants and scholars.
-- `search_scholarly_literature`: live Crossref bibliographic search, filtering unrelated title hits.
-- `seti_by_work_beta`: experimental SETI work lookup by known Pandit work ID, with explicit unverified-schema status.
+## Tools
 
-**Important:** these two live providers supply discovery leads and bibliography, *not* primary manuscript readings. Pāṇḍitya's documented `/api/seti/by_work` route is exposed as an explicitly experimental tool requiring a known numeric Pandit work ID. Query parameter and response schema remain unverified and the tool must not claim reliable witness discovery. No remote primary-text acquisition, OCR or witness adjudication yet.
+| Tool | Provider / contract | Notes |
+|---|---|---|
+| `list_source_portals` | static directory | Marks which portals are queried live and which are links only |
+| `find_catalog_entries` | Wikidata `wbsearchentities` | Leads only, not text witnesses |
+| `search_scholarly_literature` | Crossref `works`, `query.bibliographic`, type filter | Articles, books, chapters, monographs, proceedings, dissertations. Drops front/back matter (Index, Bibliography, …); the books those parts belong to are returned separately as unverified `relatedWorks` |
+| `seti_by_work` | Pāṇḍitya `GET /api/seti/by_work?ids=` (Swagger: `https://panditya.info/api/swagger.json`, v2.6.2) | Known numeric Pandit work IDs only (1–20). No title search |
 
-## Deployment
+Every result carries `provider`, `endpoint`, `httpStatus`, `retrievedAt`. Provider failures return `isError` with `status` `provider_unavailable` (network/timeout) or `provider_error` (HTTP error, wrong content type, bad JSON, schema drift) — never an empty success.
 
-1. Install Node.js 20+ and sign in to your existing Cloudflare account.
-2. Run `npm install` and `npm run check` in this folder.
-3. Run `npx wrangler login` (opens your Cloudflare login), then `npm run deploy`.
-4. Wrangler prints a `https://atlas-scholarly-sources.<subdomain>.workers.dev` URL. Check `/health` in a browser and use `/mcp` in an MCP client.
-5. In ChatGPT, **Plugins → + → Add custom MCP server** (if supported by your account), enter the `/mcp` HTTPS URL, review the four read-only tools, and connect.
+**SETI limits.** The Swagger documents the `ids` parameter but no response schema. The parser accepts only the shape observed on 2026-10-22, `{workId: {collection: [url] | {format: [url]}}}`, and reports anything else as `provider_error`. Unknown IDs are silently omitted by SETI (HTTP 400 when none match); this is reported as `no_entries_for_ids` / `seti:false`, never as absence of texts elsewhere. Labels come from `/api/entities/labels` (best effort).
 
-The server is **unauthenticated** in this starter project, so anyone who knows the Worker URL can invoke the read-only public searches. Do not add private sources or secrets to this deployment. Before enabling private Atlas data or wider exposure, add authentication, rate limits, and governance. Cloudflare may meter usage and upstream providers may rate-limit requests; monitor free-tier usage.
+## Update flow (repeatable)
 
-No GitHub connection, paid AI inference, KV database, Durable Object, or local tunnel required.
+`git push` to `main` → Cloudflare Workers Builds (existing integration, root directory `atlas_scholarly_cloudflare`) runs `wrangler deploy` → wrangler's `build.command` (see `wrangler.jsonc`) stamps the commit, typechecks and runs the tests **before** upload, so a failing test aborts the deploy → GitHub Action `verify` re-tests and polls production until `/health` reports this exact commit, then exercises every tool.
 
-## Verify
+Local: `npm ci && npm run verify` (typecheck, tests, Worker build dry-run). `npm run deploy` does the same then deploys with your own `wrangler login`; secrets stay in Cloudflare / your login, never in the repo.
 
-- `npm test` checks static source safeguards.
-- `npm run check` TypeScript verification.
-- `npm run dev` then test `http://localhost:8787/health` (Wrangler may choose a different port).
-- Use MCP Inspector or a connected ChatGPT plugin to list and invoke tools.
+## Check production
 
-## Next gate (not part of pilot)
+```bash
+curl -s https://scholarly-sources.inahd.workers.dev/health        # version, commit, deployment.versionId
+node scripts/verify-live.mjs                                      # full live check
+node scripts/verify-live.mjs --commit "$(git rev-parse HEAD)" --wait 300   # until this commit is live
+```
 
-Verify SETI Swagger/OpenAPI schema and use only documented public routes. Add `find_witnesses` if it can reliably return actual edition-linked identifiers; compare returns against Atlas's local source registry before considering source retrieval.
+A green Cloudflare build is **not** proof of deployment: compare `/health.commit` with the commit you pushed.
 
-## Update the current GitHub-connected Worker
+## Rollback
 
-Upload the **contents** of this folder to the same `atlas_scholarly_cloudflare` folder in the existing GitHub repository; replace existing matching files, do not create a nested folder. Keep the Cloudflare Worker root directory pointing at `atlas_scholarly_cloudflare`. A commit triggers the connected Cloudflare build. `/health` should report version `0.2.0`. Reconnect/refresh tools in ChatGPT if needed.
+1. Preferred (keeps history and the verify check): `git revert <bad-sha> && git push`, then run the check above with the new commit.
+2. Immediate: Cloudflare dashboard → Workers → `scholarly-sources` → Deployments → pick the previous version → *Rollback* (or `npx wrangler rollback <version-id>`). `/health.deployment.versionId` shows what is live. A later push redeploys from `main`, so also revert in git.
 
-**Validation limit:** local static tests pass, but dependency installation, live SETI response schema, and deployed ChatGPT handshake are not verified in this environment. Deploy only after `npm run check` and Wrangler build succeed. To make SETI authoritative, inspect live Swagger and update the parameter and response parser with verified samples.
+## Known failure mode (seen 2026-10-22)
+
+Workers Builds for consecutive pushes can finish out of order; the build of an older commit finishing last overwrites the newer deployment. Symptom: build "success" but `/health.commit` is not the latest. Fix: re-run the build of the latest commit (dashboard → Builds → Retry), or push a new commit.
