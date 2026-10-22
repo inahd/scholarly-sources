@@ -1,0 +1,203 @@
+{
+ "ranAt": "2026-10-22T20:26:49.935Z",
+ "summary": {
+  "base": "http://localhost:8799",
+  "checksPassed": 24,
+  "checksTotal": 24,
+  "providerFailures": 0,
+  "irrelevantCandidates": 0,
+  "candidatesReturned": 23
+ },
+ "rows": [
+  {
+   "id": "tantrarajatantra",
+   "query": "Tantrarājatantra",
+   "checks": {
+    "zeroMatchReported": true,
+    "noIndependenceClaim": true,
+    "archiveLeads": true
+   },
+   "counts": {
+    "candidates": 0,
+    "witnessesByKind": {
+     "printed_edition_scan": 8
+    },
+    "archiveRelevant": 8,
+    "archiveReturned": 8
+   },
+   "archiveSample": [
+    "in.ernet.dli.2015.22750 | Tantraraja Tantra | 1926-01-01T00:00:00Z",
+    "in.ernet.dli.2015.282388 | The Tantraraja Tantra 1940 | 1940-01-01T00:00:00Z",
+    "kYHY_tantraraja-tantra-a-short-analysis-1956.-ganesh-co-sir-jone-woodroffe | Tantraraja Tantra A Short Analysis 1956. Ganesh Co Sir Jone Woodroffe | "
+   ],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "tantrarajatantra-manorama",
+   "query": "Tantrarājatantra with Manoramā",
+   "checks": {
+    "zeroMatchReported": true,
+    "noIndependenceClaim": true,
+    "archiveLeads": true
+   },
+   "counts": {
+    "candidates": 0,
+    "witnessesByKind": {
+     "printed_edition_scan": 8
+    },
+    "archiveRelevant": 8,
+    "archiveReturned": 8
+   },
+   "archiveSample": [
+    "in.ernet.dli.2015.22750 | Tantraraja Tantra | 1926-01-01T00:00:00Z",
+    "in.ernet.dli.2015.282388 | The Tantraraja Tantra 1940 | 1940-01-01T00:00:00Z",
+    "kYHY_tantraraja-tantra-a-short-analysis-1956.-ganesh-co-sir-jone-woodroffe | Tantraraja Tantra A Short Analysis 1956. Ganesh Co Sir Jone Woodroffe | "
+   ],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "manorama-commentary",
+   "query": "Manoramā commentary",
+   "checks": {
+    "enoughCandidates": true,
+    "homonymsFlagged": true
+   },
+   "counts": {
+    "candidates": 8,
+    "irrelevantCandidates": 0
+   },
+   "irrelevant": []
+  },
+  {
+   "id": "ganitakaumudi",
+   "query": "Gaṇitakaumudī",
+   "checks": {
+    "top1Correct": true,
+    "noIndependenceClaim": true,
+    "setiEmpty": true
+   },
+   "counts": {
+    "candidates": 1,
+    "irrelevantCandidates": 0,
+    "witnessesByKind": {
+     "catalogue_record": 1,
+     "printed_edition_scan": 8
+    }
+   },
+   "irrelevant": [],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "vedanga-jyotisa",
+   "query": "Vedāṅga Jyotiṣa",
+   "checks": {
+    "expectedIdsFound": true,
+    "noIndependenceClaim": true,
+    "archiveLeads": true
+   },
+   "counts": {
+    "candidates": 2,
+    "irrelevantCandidates": 0,
+    "witnessesByKind": {
+     "catalogue_record": 2,
+     "electronic_transcription": 4,
+     "printed_edition_scan": 5
+    },
+    "archiveRelevant": 5,
+    "archiveReturned": 5
+   },
+   "irrelevant": [],
+   "archiveSample": [
+    "vedangajyotisalagdharaed.kupannasastryt.s._97_V | Vedanga Jyotisa Lagdhara Ed. Kupanna Sastry T. S. | ",
+    "vedangajyotisalagdharaed.holayp.v.revisedvyawaharea.w.deshmukhg.p._560_N | Vedanga Jyotisa Lagdhara Ed. Holay P. V. Revised Vyawahare A. W. Deshmukh G. P. | ",
+    "vedangajyotisavedicastronomyaprehistoricpuzzleprabhakarvyankateshholay_456_Y | Vedanga Jyotisa Vedic Astronomy Apre Historic Puzzle Prabhakar Vyankatesh Holay | "
+   ],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "suryasiddhanta",
+   "query": "Sūryasiddhānta",
+   "checks": {
+    "top1Correct": true,
+    "noIndependenceClaim": true,
+    "setiCollections": true,
+    "archiveLeads": true
+   },
+   "counts": {
+    "candidates": 3,
+    "irrelevantCandidates": 0,
+    "witnessesByKind": {
+     "catalogue_record": 3,
+     "electronic_transcription": 4,
+     "printed_edition_scan": 8
+    },
+    "archiveRelevant": 8,
+    "archiveReturned": 8
+   },
+   "irrelevant": [],
+   "archiveSample": [
+    "mWle_surya-siddhanta-by-udaya-narayana-singh-photo-copy-smt-savitri-devi-bagadiya-trust-calcutta | Surya Siddhanta By Udaya Narayana Singh Photo Copy Smt Savitri Devi Bagadiya Trust Calcutta | ",
+    "dli.bengal.10689.17955 | TRANSLATION OF THE SURYA-SIDDHANTA | 1860-01-01T00:00:00Z",
+    "w.-e.-van-wijk-auth.-decimal-tables-for-the-reduction-of-hindu-dates-from-the-da | W. E. Van Wijk (auth.) Decimal Tables For The Reduction Of Hindu Dates From The Data Of The Sūrya Siddhānta Springer Netherlands ( 1862) | "
+   ],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "suryasiddhanta-devanagari",
+   "query": "सूर्यसिद्धान्त",
+   "checks": {
+    "top1Correct": true,
+    "noIndependenceClaim": true
+   },
+   "counts": {
+    "candidates": 3,
+    "irrelevantCandidates": 0,
+    "witnessesByKind": {
+     "catalogue_record": 3,
+     "electronic_transcription": 4,
+     "printed_edition_scan": 8
+    }
+   },
+   "irrelevant": [],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "suryasiddhanta-harvard-kyoto",
+   "query": "sUryasiddhAnta",
+   "checks": {
+    "top1Correct": true,
+    "noIndependenceClaim": true
+   },
+   "counts": {
+    "candidates": 3,
+    "irrelevantCandidates": 0,
+    "witnessesByKind": {
+     "catalogue_record": 3,
+     "electronic_transcription": 4,
+     "printed_edition_scan": 8
+    }
+   },
+   "irrelevant": [],
+   "physicalManuscripts": 0
+  },
+  {
+   "id": "suryasiddhanta-ascii",
+   "query": "suryasiddhanta",
+   "checks": {
+    "top1Correct": true,
+    "noIndependenceClaim": true
+   },
+   "counts": {
+    "candidates": 3,
+    "irrelevantCandidates": 0,
+    "witnessesByKind": {
+     "catalogue_record": 3,
+     "electronic_transcription": 4,
+     "printed_edition_scan": 8
+    }
+   },
+   "irrelevant": [],
+   "physicalManuscripts": 0
+  }
+ ]
+}

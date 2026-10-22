@@ -1,0 +1,14 @@
+{
+  "_frozen": "2026-10-22. Expectations come from direct provider probes made before the matcher was run: Pandit works list (13,683 works) searched by substring; SETI by_work responses for 105678 and 106098; Internet Archive advancedsearch.",
+  "queries": [
+    { "id": "tantrarajatantra", "query": "Tantrarājatantra", "pandit": { "expectAbsent": true }, "archive": { "titleRegex": "tantraraja", "expectAtLeast": 1 } },
+    { "id": "tantrarajatantra-manorama", "query": "Tantrarājatantra with Manoramā", "pandit": { "expectAbsent": true }, "archive": { "titleRegex": "tantraraja", "expectAtLeast": 1 } },
+    { "id": "manorama-commentary", "query": "Manoramā commentary", "pandit": { "expectHomonyms": true, "relevantTitleRegex": "manorama", "expectAtLeast": 2 } },
+    { "id": "ganitakaumudi", "query": "Gaṇitakaumudī", "pandit": { "top1": "105678", "relevantTitleRegex": "ganitakaumudi" }, "seti": { "expectEmpty": true } },
+    { "id": "vedanga-jyotisa", "query": "Vedāṅga Jyotiṣa", "pandit": { "expectIds": ["105412", "105492"], "relevantTitleRegex": "jyotisavedanga|vedangajyotisa" }, "archive": { "titleRegex": "vedanga", "expectAtLeast": 1 } },
+    { "id": "suryasiddhanta", "query": "Sūryasiddhānta", "pandit": { "top1": "106098", "relevantTitleRegex": "suryasiddhanta" }, "seti": { "expectCollections": ["GRETIL", "DCS"] }, "archive": { "titleRegex": "suryasiddhanta", "expectAtLeast": 1 } },
+    { "id": "suryasiddhanta-devanagari", "query": "सूर्यसिद्धान्त", "pandit": { "top1": "106098", "relevantTitleRegex": "suryasiddhanta" } },
+    { "id": "suryasiddhanta-harvard-kyoto", "query": "sUryasiddhAnta", "pandit": { "top1": "106098", "relevantTitleRegex": "suryasiddhanta" } },
+    { "id": "suryasiddhanta-ascii", "query": "suryasiddhanta", "pandit": { "top1": "106098", "relevantTitleRegex": "suryasiddhanta" } }
+  ]
+}

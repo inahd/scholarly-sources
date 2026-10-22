@@ -49,7 +49,7 @@ const init = await rpc("initialize", { protocolVersion: "2025-06-18", capabiliti
 report(init.body.result?.serverInfo?.version === pkg.version, "MCP initialize", JSON.stringify(init.body.result?.serverInfo));
 const list = await rpc("tools/list", {});
 const names = (list.body.result?.tools ?? []).map(t => t.name).sort();
-report(JSON.stringify(names) === JSON.stringify(["find_catalog_entries", "list_source_portals", "search_scholarly_literature", "seti_by_work"]), "tools/list", names.join(","));
+report(JSON.stringify(names) === JSON.stringify(["find_catalog_entries", "find_witnesses", "find_work", "list_source_portals", "normalize_query", "read_passage", "search_scholarly_literature", "seti_by_work"]), "tools/list", names.join(","));
 
 // 3. Tools
 const dir = await tool("list_source_portals", {});
@@ -61,6 +61,20 @@ if (!skipUpstream) {
   const setiOk = !seti.isError && seti.json.status === "ok" && seti.json.works.some(w => w.seti && w.collections.length);
   const setiDown = seti.isError && seti.json.status === "provider_unavailable";
   report(setiOk || setiDown, "seti_by_work", setiOk ? `ok, ${seti.json.works.map(w => `${w.workId}:${w.collections.map(c => c.collection).join("+")}`).join(" ")}` : `PROVIDER STATUS ${seti.json.status}: ${seti.json.message}`);
+  const nq = await tool("normalize_query", { query: "sUryasiddhAnta" });
+  report(!nq.isError && nq.json.strict === "sūryasiddhānta" && nq.json.submitted === "sUryasiddhAnta", "normalize_query", nq.json.strict);
+  const fw = await tool("find_work", { query: "Gaṇitakaumudī" });
+  report(!fw.isError && fw.json.candidates?.[0]?.panditWorkId === "105678", "find_work (title -> Pandit id)", fw.isError ? `${fw.json.status} ${fw.json.message}` : `top=${fw.json.candidates?.[0]?.panditWorkId} ${fw.json.candidates?.[0]?.confidence}`);
+  const fz = await tool("find_work", { query: "Tantrarājatantra with Manoramā" });
+  report(!fz.isError && fz.json.status === "no_candidates", "find_work reports an absent title honestly", fz.json.status);
+  const fx = await tool("find_witnesses", { query: "Tantrarājatantra with Manoramā", locus: "chapter 25" });
+  const kinds = [...new Set((fx.json.witnesses ?? []).map(w => w.kind))].join(",");
+  report(!fx.isError && ["ok", "partial"].includes(fx.json.status) && (fx.json.witnesses ?? []).every(w => w.independentWitness?.established === false) && fx.json.manuscripts?.physicalManuscriptWitnessesFound === 0 && (fx.json.witnesses ?? []).some(w => w.kind === "printed_edition_scan"),
+    "find_witnesses (acceptance query)", fx.isError ? `${fx.json.status} ${fx.json.message}` : `${fx.json.status} kinds=${kinds} n=${fx.json.witnesses.length}`);
+  const rp = await tool("read_passage", { text: "rv", locator: "1.1.1" });
+  report(!rp.isError && rp.json.status === "ok" && rp.json.passages?.some(p => p.text.startsWith("agním")), "read_passage rv 1.1.1", rp.isError ? `${rp.json.status} ${rp.json.message}` : `${rp.json.passages?.length} editions`);
+  const rn = await tool("read_passage", { text: "rv", locator: "99.99.99" });
+  report(!rn.isError && rn.json.status === "locator_not_found", "negative: unknown locator reported, not guessed");
   const bad = await tool("seti_by_work", { work_ids: [] });
   report(bad.isError === true, "negative: empty work_ids rejected");
 }

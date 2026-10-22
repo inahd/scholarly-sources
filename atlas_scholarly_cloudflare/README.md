@@ -1,4 +1,4 @@
-# Atlas Scholarly Sources — Cloudflare MCP Worker (v0.2)
+# Atlas Scholarly Sources — Cloudflare MCP Worker (v0.3)
 
 Read-only, stateless remote MCP server. Independent of the Atlas machine and corpus. Unauthenticated: do not add private sources or secrets.
 
@@ -17,6 +17,19 @@ Read-only, stateless remote MCP server. Independent of the Atlas machine and cor
 Every result carries `provider`, `endpoint`, `httpStatus`, `retrievedAt`. Provider failures return `isError` with `status` `provider_unavailable` (network/timeout) or `provider_error` (HTTP error, wrong content type, bad JSON, schema drift) — never an empty success.
 
 **SETI limits.** The Swagger documents the `ids` parameter but no response schema. The parser accepts only the shape observed on 2026-10-22, `{workId: {collection: [url] | {format: [url]}}}`, and reports anything else as `provider_error`. Unknown IDs are silently omitted by SETI (HTTP 400 when none match); this is reported as `no_entries_for_ids` / `seti:false`, never as absence of texts elsewhere. Labels come from `/api/entities/labels` (best effort).
+
+### v0.3 tools (title → work → witnesses → passage)
+
+| Tool | Provider / verified contract | Notes |
+|---|---|---|
+| `normalize_query` | none (local) | Strict IAST vs lossy folded keys; every variant listed with its basis. ś/ṣ/s, ḷ/ḻ/l, ṭ/t are never merged in the strict tier; ṃ≡ṁ is treated as one letter in two dot conventions |
+| `find_work` | Pandit `GET /api/entities/works` (13,683 titles, scanned locally with a native regex, not parsed) + `POST /api/graph/subgraph` | Title search in IAST, Devanāgarī, Harvard-Kyoto or ASCII; `Work with Commentary`. Ranked candidates with Pandit id, alternative titles, match basis, confidence, `https://www.panditproject.org/node/<id>` and explicit homonym ambiguity. Absence is reported |
+| `find_witnesses` | Pandit + SETI `by_work` + Pandit relations + Internet Archive `advancedsearch` + VedaWeb `/api/texts` | Items typed `catalogue_record`, `electronic_transcription`, `printed_edition_scan`, `reprint_scan`. **No item is called an independent witness**; physical manuscripts are reported as not supported by any provider |
+| `read_passage` | VedaWeb/Tekst `/api/locations`, `/api/resources`, `/api/contents` | One stanza-level locator (e.g. rv 1.1.1), per edition: exact text, locator, encoding, citation, provenance URL, licence status. Vedic texts only |
+
+Frozen relevance set: `eval/queries.json`, run with `node scripts/eval-relevance.mjs [baseUrl]`.
+
+**Limits.** `panditproject.org` blocks automated clients, so its manuscript catalogue is not queried. Internet Archive metadata does not say whether a scan is an edition, translation, study or reprint; OCR text is not fetched. VedaWeb does not expose licences through its API (they are in the TEI headers of `vedaweb-data`). Title matching only finds titles that contain the query (modulo spacing, diacritics and word order).
 
 ## Update flow (repeatable)
 

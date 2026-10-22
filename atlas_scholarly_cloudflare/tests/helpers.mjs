@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 
 // Regenerate build-info, then bundle the real Worker entry exactly as source.
 execFileSync("node", ["scripts/build-info.mjs"], { cwd: new URL("..", import.meta.url), stdio: "ignore" });
@@ -13,6 +14,14 @@ export const worker = (await import(pathToFileURL(out).href)).default;
 const provOut = join(mkdtempSync(join(tmpdir(), "scholarly-p-")), "providers.mjs");
 await build({ entryPoints: [new URL("../src/providers.ts", import.meta.url).pathname], bundle: true, format: "esm", platform: "node", outfile: provOut, logLevel: "silent" });
 export const providers = await import(pathToFileURL(provOut).href);
+/** Bundle any src module for direct unit tests. */
+export async function load(name) {
+  const o = join(mkdtempSync(join(tmpdir(), `scholarly-${name}-`)), `${name}.mjs`);
+  await build({ entryPoints: [new URL(`../src/${name}.ts`, import.meta.url).pathname], bundle: true, format: "esm", platform: "node", outfile: o, logLevel: "silent" });
+  return import(pathToFileURL(o).href);
+}
+export const fixture = (n) => readFileSync(new URL(`./fixtures/${n}`, import.meta.url), "utf8");
+export const raw = (text, status = 200) => new Response(text, { status, headers: { "content-type": "application/json" } });
 
 const H = { "content-type": "application/json", accept: "application/json, text/event-stream" };
 /** POST one JSON-RPC message to /mcp; returns the parsed JSON-RPC response (handles JSON or SSE bodies). */

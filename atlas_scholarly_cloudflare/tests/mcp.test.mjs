@@ -5,7 +5,7 @@ import * as sdk from "@modelcontextprotocol/server";
 import { worker, rpc, INIT, callTool, toolJson, stubFetch, json } from "./helpers.mjs";
 
 const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
-const TOOLS = ["find_catalog_entries", "list_source_portals", "search_scholarly_literature", "seti_by_work"];
+const TOOLS = ["find_catalog_entries", "find_witnesses", "find_work", "list_source_portals", "normalize_query", "read_passage", "search_scholarly_literature", "seti_by_work"];
 
 test("MCP initialize succeeds and reports the package version (fails if the handler cannot initialize)", async () => {
   const r = await rpc("initialize", INIT);
@@ -23,7 +23,7 @@ test("server/discover (modern envelope) is answered", async () => {
   assert.deepEqual(b.result.supportedVersions, [ver]);
   assert.equal(b.result._meta[sdk.SERVER_INFO_META_KEY].version, pkg.version);
 });
-test("tools/list exposes exactly the four read-only tools", async () => {
+test("tools/list exposes exactly the eight read-only tools (the original four plus four v0.3 tools)", async () => {
   const r = await rpc("tools/list", {});
   assert.deepEqual(r.body.result.tools.map(t => t.name).sort(), TOOLS);
 });

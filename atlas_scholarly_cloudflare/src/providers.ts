@@ -1,5 +1,5 @@
 /** Public discovery only. Nothing here ingests or redistributes corpus texts. */
-export const USER_AGENT = "AtlasScholarlySources/0.2 (read-only research)";
+export const USER_AGENT = "AtlasScholarlySources/0.3 (read-only research)";
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
 export const portals = [
@@ -18,10 +18,10 @@ export class ProviderError extends Error {
 }
 
 const MAX_BYTES = 400_000;
-export async function queryJson(provider: string, url: string, doFetch: FetchLike = fetch, timeoutMs = 12000): Promise<{ data: unknown; httpStatus: number }> {
+export async function queryJson(provider: string, url: string, doFetch: FetchLike = fetch, timeoutMs = 12000, init: { method?: string; body?: string; contentType?: string } = {}): Promise<{ data: unknown; httpStatus: number }> {
   let response: Response;
   try {
-    response = await doFetch(url, { headers: { Accept: "application/json", "User-Agent": USER_AGENT }, signal: AbortSignal.timeout(timeoutMs) });
+    response = await doFetch(url, { method: init.method ?? "GET", body: init.body, headers: { Accept: "application/json", "User-Agent": USER_AGENT, ...(init.contentType ? { "Content-Type": init.contentType } : {}) }, signal: AbortSignal.timeout(timeoutMs) });
   } catch (e) {
     throw new ProviderError(provider, "unavailable", `${provider} unreachable: ${(e as Error)?.name ?? "error"}`);
   }
@@ -34,7 +34,7 @@ export async function queryJson(provider: string, url: string, doFetch: FetchLik
   catch { throw new ProviderError(provider, "bad_json", `${provider} returned invalid JSON`, response.status); }
 }
 
-const provenance = (provider: string, endpoint: string, httpStatus: number | null) =>
+export const provenance = (provider: string, endpoint: string, httpStatus: number | null) =>
   ({ provider, endpoint, httpStatus, retrievedAt: new Date().toISOString() });
 
 /* ---------- Wikidata ---------- */
