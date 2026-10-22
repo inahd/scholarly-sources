@@ -16,6 +16,6 @@ export default {
     const url=new URL(request.url);
     if(url.pathname==="/health") return Response.json({status:"ok",service:"atlas-scholarly-sources",version:"0.1.0"});
     if(url.pathname!=="/mcp") return new Response("Not found",{status:404});
-    return handler(request,env,ctx);
+return handler.fetch(request);
   }
 };
