@@ -1,4 +1,4 @@
-# Atlas Scholarly Sources — Cloudflare MCP Worker (v0.3)
+# Atlas Scholarly Sources — Cloudflare MCP Worker (v0.4)
 
 Read-only, stateless remote MCP server. Independent of the Atlas machine and corpus. Unauthenticated: do not add private sources or secrets.
 
@@ -30,6 +30,16 @@ Every result carries `provider`, `endpoint`, `httpStatus`, `retrievedAt`. Provid
 Frozen relevance set: `eval/queries.json`, run with `node scripts/eval-relevance.mjs [baseUrl]`.
 
 **Limits.** `panditproject.org` blocks automated clients, so its manuscript catalogue is not queried. Internet Archive metadata does not say whether a scan is an edition, translation, study or reprint; OCR text is not fetched. VedaWeb does not expose licences through its API (they are in the TEI headers of `vedaweb-data`). Title matching only finds titles that contain the query (modulo spacing, diacritics and word order).
+
+### v0.4 tools (dictionary, grammar, textual comparison)
+
+| Tool | Provider / verified contract | Notes |
+|---|---|---|
+| `lookup_sanskrit_word` | C-SALT/Kosh REST for the Cologne Digital Sanskrit Lexicon: `GET /dicts/<id>/restful/entries?field=&query=&query_type=` (MW, AP90, PWG, BHS, VEI, GRA) | IAST, Devanāgarī, Harvard-Kyoto, `scheme:"slp1"`, or plain ASCII (folded regexp, labelled lossy). Each dictionary's own entries with homonym numbers, L-numbers, page refs, attribution. Sub-entries (`<re>`, e.g. nakṣatra under `nakz`) are found through `re_headwords_slp1`. **Typed layers:** `lexical` (dictionary text, markup stripped), `morphological` (only with `analyze_form`, from the Sanskrit Heritage lemmatizer, every alternative listed), `contextual` (never provided). No meaning is generated |
+| `find_grammar_rule` | `github.com/sanskrit/ashtadhyayi` raw files: `data/sutrANi.tsv`, `padachcheda/`, `anuvritti/`, `adhikara/`, `full_sutra/` | By number (6.1.88, ६.१.८८) or text (vṛddhir eci). Sūtra, word division, anuvṛtti/adhikāra with source sūtras, related rules, anuvṛtti-completed reading (labelled derived), commentaries linked not fetched, Aṣṭādhyāyī linked to Pandit/SETI. Repeated sūtra texts are ambiguous, never chosen |
+| `compare_readings` | none (pure, deterministic) | Two passages ≤1000 characters, Devanāgarī/IAST. Letter-for-letter alignment, substitutions/omissions/insertions with spans in the original strings, originals verbatim + SHA-256. Evidence classes: `certain_difference`, `uncertain_difference` (`[x]`, `<x>`), `indeterminate_due_to_damage` (`?`, `[...]`). Normalization `none`/`encoding`/`conservative` never merges ś/ṣ/s, b/v, ṃ/nasals; such pairs are only tagged. No variant is resolved; witness independence is `unknown` unless declared with evidence or `derived_from`; similarity is never used |
+
+**Limits.** Dictionary data has no stated licence in the API or repository (Kosh software is MIT): cite the original dictionary. The Heritage lemmatizer takes isolated inflected forms only (no preverb verbs or compounds); its terms for programmatic use were not verified. Pāṇini commentary texts are multi-megabyte corpora and are linked, not retrieved. The sūtra repository states no licence. `compare_readings` cannot say whether a difference is a historical reading, a scribal variant or OCR error; it states only what differs, with what certainty.
 
 ## Update flow (repeatable)
 

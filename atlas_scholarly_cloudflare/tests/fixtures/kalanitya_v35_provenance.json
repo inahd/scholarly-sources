@@ -1,0 +1,20 @@
+{
+ "iast": {
+  "file": "atlas-corpus/holdings/tantrarajatantra/muktabodha-M00122/tantrarAjatantra-M00122-IAST.txt",
+  "sha256_file": "8891d05fe788d18ed9b28581a1997d3363960241b54ae34976d9bcf3f5019c54",
+  "char_offset": [
+   793232,
+   793337
+  ],
+  "note": "Muktabodha M00122 IAST transcription of Tantrar\u0101jatantra with Manoram\u0101 (1926 Mishra ed. part II), ch.25 v.35"
+ },
+ "ocr": {
+  "file": "atlas_core/research/acquisition/raw/tantraraja_part2_mishra_1926_ocr.txt",
+  "sha256_file": "97a5d23bc689ce36dfb14516b5e719257f3294a25ab78866763591427f4d1de5",
+  "char_offset": [
+   320330,
+   320417
+  ],
+  "note": "Devan\u0101gar\u012b OCR of the same 1926 print (atlas_core raw acquisition, read only)"
+ }
+}

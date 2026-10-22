@@ -33,11 +33,11 @@ export const foldCompact = (s: string) => s.normalize("NFD").replace(MARKS, "").
 export const foldWords = (s: string) => s.normalize("NFD").replace(MARKS, "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 
 /* ---------- Devanāgarī → IAST ---------- */
-const IND_V: Record<string, string> = { "अ": "a", "आ": "ā", "इ": "i", "ई": "ī", "उ": "u", "ऊ": "ū", "ऋ": "ṛ", "ॠ": "ṝ", "ऌ": "ḷ", "ॡ": "ḹ", "ए": "e", "ऐ": "ai", "ओ": "o", "औ": "au" };
-const MATRA: Record<string, string> = { "ा": "ā", "ि": "i", "ी": "ī", "ु": "u", "ू": "ū", "ृ": "ṛ", "ॄ": "ṝ", "ॢ": "ḷ", "ॣ": "ḹ", "े": "e", "ै": "ai", "ो": "o", "ौ": "au" };
-const CONS: Record<string, string> = { "क": "k", "ख": "kh", "ग": "g", "घ": "gh", "ङ": "ṅ", "च": "c", "छ": "ch", "ज": "j", "झ": "jh", "ञ": "ñ", "ट": "ṭ", "ठ": "ṭh", "ड": "ḍ", "ढ": "ḍh", "ण": "ṇ", "त": "t", "थ": "th", "द": "d", "ध": "dh", "न": "n", "प": "p", "फ": "ph", "ब": "b", "भ": "bh", "म": "m", "य": "y", "र": "r", "ल": "l", "ळ": "ḷ", "व": "v", "श": "ś", "ष": "ṣ", "स": "s", "ह": "h" };
-const SIGN: Record<string, string> = { "ं": "ṃ", "ँ": "ṃ", "ः": "ḥ", "ऽ": "’" };
-const VIRAMA = "्", NUKTA = "़";
+export const IND_V: Record<string, string> = { "अ": "a", "आ": "ā", "इ": "i", "ई": "ī", "उ": "u", "ऊ": "ū", "ऋ": "ṛ", "ॠ": "ṝ", "ऌ": "ḷ", "ॡ": "ḹ", "ए": "e", "ऐ": "ai", "ओ": "o", "औ": "au" };
+export const MATRA: Record<string, string> = { "ा": "ā", "ि": "i", "ी": "ī", "ु": "u", "ू": "ū", "ृ": "ṛ", "ॄ": "ṝ", "ॢ": "ḷ", "ॣ": "ḹ", "े": "e", "ै": "ai", "ो": "o", "ौ": "au" };
+export const CONS: Record<string, string> = { "क": "k", "ख": "kh", "ग": "g", "घ": "gh", "ङ": "ṅ", "च": "c", "छ": "ch", "ज": "j", "झ": "jh", "ञ": "ñ", "ट": "ṭ", "ठ": "ṭh", "ड": "ḍ", "ढ": "ḍh", "ण": "ṇ", "त": "t", "थ": "th", "द": "d", "ध": "dh", "न": "n", "प": "p", "फ": "ph", "ब": "b", "भ": "bh", "म": "m", "य": "y", "र": "r", "ल": "l", "ळ": "ḷ", "व": "v", "श": "ś", "ष": "ṣ", "स": "s", "ह": "h" };
+export const SIGN: Record<string, string> = { "ं": "ṃ", "ँ": "ṃ", "ः": "ḥ", "ऽ": "’" };
+export const VIRAMA = "्", NUKTA = "़";
 const isDeva = (c: string) => c >= "ऀ" && c <= "ॿ";
 const ACCENT = /[॑-॔᳐-᳹]/g;
 

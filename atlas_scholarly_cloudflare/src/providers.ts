@@ -1,5 +1,5 @@
 /** Public discovery only. Nothing here ingests or redistributes corpus texts. */
-export const USER_AGENT = "AtlasScholarlySources/0.3 (read-only research)";
+export const USER_AGENT = "AtlasScholarlySources/0.4 (read-only research)";
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 
 export const portals = [
