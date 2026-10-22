@@ -1,5 +1,5 @@
 {
-  "name": "atlas-scholarly-sources",
+  "name": "scholarly-sources",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
