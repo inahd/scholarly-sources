@@ -75,6 +75,13 @@ export async function findWitnesses(args: { query?: string; work_id?: number; lo
     status: witnesses.length ? (outages.length ? "partial" : "ok") : outages.length ? "providers_failed" : "no_witnesses_found",
     query: { submitted: args.query ?? null, workId: args.work_id ?? null, locus: args.locus ?? null }, workResolution: { ...(resolution as object | null), candidates, ambiguity, usedForWitnessSearch: resolved.map(c => c.panditWorkId) },
     witnesses, relations, kindsPresent: kinds,
+    discoveryCoverage: {
+      electronicTexts: { provider: "SETI", status: (providerStatus.seti as { status?: string }).status ?? "unknown", scope: "registered e-text links for resolved Pandit work IDs only" },
+      printedScans: { provider: "Internet Archive", status: (providerStatus.internetArchive as { status?: string }).status ?? "unknown", scope: "metadata candidates, not verified editions or independent manuscripts" },
+      physicalManuscripts: { status: "not_queried", supportedProviderCount: 0, scope: "UCCIK/NCC, indiccat and institutional manuscript catalogues are manual leads only" },
+      completenessClaim: false,
+      note: "No results from the queried providers does not imply that a work, edition, or manuscript is absent elsewhere."
+    },
     manuscripts: { status: "no_supported_provider", physicalManuscriptWitnessesFound: 0,
       note: "No supported programmatic manuscript-catalogue provider was queried. In particular, UCCIK/NCC is a catalogue of manuscript references, not a provider of verified manuscript images. No physical manuscript was identified; this is a limit of the providers, not evidence none exists.",
       leads: [
