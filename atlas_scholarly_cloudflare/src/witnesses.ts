@@ -76,8 +76,13 @@ export async function findWitnesses(args: { query?: string; work_id?: number; lo
     query: { submitted: args.query ?? null, workId: args.work_id ?? null, locus: args.locus ?? null }, workResolution: { ...(resolution as object | null), candidates, ambiguity, usedForWitnessSearch: resolved.map(c => c.panditWorkId) },
     witnesses, relations, kindsPresent: kinds,
     manuscripts: { status: "no_supported_provider", physicalManuscriptWitnessesFound: 0,
-      note: "No stable public programmatic manuscript-catalogue API is available to this service (Pandit Project pages block automated clients). No physical manuscript was identified; this is a limit of the providers, not evidence none exists.",
-      leads: [{ name: "Pandit Project", url: "https://www.panditproject.org/" }, { name: "Muktabodha digital library", url: "https://muktabodha.org/digital-library/" }] },
+      note: "No supported programmatic manuscript-catalogue provider was queried. In particular, UCCIK/NCC is a catalogue of manuscript references, not a provider of verified manuscript images. No physical manuscript was identified; this is a limit of the providers, not evidence none exists.",
+      leads: [
+        { name: "UCCIK / New Catalogus Catalogorum", url: "https://uccik.in/", access: "manual title, author or subject search", status: "not_queried", evidenceType: "catalogue_reference", note: "A matching NCC entry does not establish physical manuscript identity or access rights." },
+        { name: "indiccat", url: "https://www.indiccat.org/", access: "manual catalogue and collection search", status: "not_queried", evidenceType: "catalogue_reference" },
+        { name: "Pandit Project", url: "https://www.panditproject.org/", status: "not_queried" },
+        { name: "Muktabodha digital library", url: "https://muktabodha.org/digital-library/", status: "not_queried" }
+      ] },
     locus: args.locus ? { requested: args.locus, note: "Providers give no chapter-level index except VedaWeb. Each witness lists how the locus can be reached; none was checked for the locus." } : null,
     independence: { established: false, note: "No witness here is shown to be independent of another. Electronic transcriptions and scans derive from printed editions." },
     providerStatus

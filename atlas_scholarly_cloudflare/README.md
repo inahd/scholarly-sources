@@ -31,6 +31,8 @@ Frozen relevance set: `eval/queries.json`, run with `node scripts/eval-relevance
 
 **Limits.** `panditproject.org` blocks automated clients, so its manuscript catalogue is not queried. Internet Archive metadata does not say whether a scan is an edition, translation, study or reprint; OCR text is not fetched. VedaWeb does not expose licences through its API (they are in the TEI headers of `vedaweb-data`). Title matching only finds titles that contain the query (modulo spacing, diacritics and word order).
 
+**Manuscript catalogue leads.** `list_source_portals` and `find_witnesses.manuscripts.leads` identify UCCIK/NCC and indiccat as manual discovery routes. Neither is queried by the Worker, and no NCC identity, manuscript count, holding institution or physical witness is inferred from a title match. An API/export and its terms must be verified before adding a live provider. The Worker is public and stateless; reconciliation with private Atlas Corpus holdings belongs in an authorized Atlas-side layer, not in this unauthenticated service.
+
 ### v0.4 tools (dictionary, grammar, textual comparison)
 
 | Tool | Provider / verified contract | Notes |

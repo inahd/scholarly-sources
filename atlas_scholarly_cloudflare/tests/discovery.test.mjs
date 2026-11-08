@@ -140,6 +140,8 @@ test("find_witnesses via MCP: typed items, no independent-witness claim, manuscr
     const kinds = new Set(b.witnesses.map(w => w.kind)); for (const k of ["catalogue_record", "electronic_transcription", "printed_edition_scan"]) assert.ok(kinds.has(k), k);
     assert.ok(b.witnesses.every(w => w.independentWitness.established === false));
     assert.ok(!b.witnesses.some(w => w.kind === "physical_manuscript")); assert.equal(b.manuscripts.physicalManuscriptWitnessesFound, 0); assert.equal(b.manuscripts.status, "no_supported_provider");
+    const uccik = b.manuscripts.leads.find(w => w.name.includes("UCCIK"));
+    assert.equal(uccik.status, "not_queried"); assert.equal(uccik.evidenceType, "catalogue_reference");
     const e = b.witnesses.find(w => w.kind === "electronic_transcription"); assert.equal(e.providerRecordId, "106098:GRETIL"); assert.match(e.url, /surysidu\.htm$/);
     assert.equal(b.locus.requested, "chapter 1");
   } finally { r(); }
