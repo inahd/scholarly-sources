@@ -87,6 +87,7 @@ export async function findWitnesses(args: { query?: string; work_id?: number; lo
       leads: [
         { name: "UCCIK / New Catalogus Catalogorum", url: "https://uccik.in/", access: "manual title, author or subject search", status: "not_queried", evidenceType: "catalogue_reference", note: "A matching NCC entry does not establish physical manuscript identity or access rights." },
         { name: "indiccat", url: "https://www.indiccat.org/", access: "manual catalogue and collection search", status: "not_queried", evidenceType: "catalogue_reference" },
+        { name: "NGMCP Descriptive Catalogue (INDOLOGY mirror)", url: "https://indology.github.io/NGMCP-Descriptive-Catalogue/", access: "browse CC0 catalogue descriptions; bulk mirror available at github.com/INDOLOGY/NGMCP-Descriptive-Catalogue", status: "not_queried", evidenceType: "catalogue_reference", note: "A descriptive catalogue entry is not a verified digital image or independent textual witness." },
         { name: "Pandit Project", url: "https://www.panditproject.org/", status: "not_queried" },
         { name: "Muktabodha digital library", url: "https://muktabodha.org/digital-library/", status: "not_queried" }
       ] },

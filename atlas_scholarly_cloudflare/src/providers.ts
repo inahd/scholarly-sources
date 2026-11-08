@@ -7,6 +7,7 @@ export const portals = [
   { name: "Pandit Project", url: "https://panditproject.org/", role: "manuscripts, works, people and identifiers", api: "link only" },
   { name: "UCCIK / New Catalogus Catalogorum", url: "https://uccik.in/", role: "NCC work identifiers and references to manuscript catalogues and holding collections; bibliographic leads, not digitized manuscript witnesses", api: "link only; no verified public API or export" },
   { name: "indiccat", url: "https://www.indiccat.org/", role: "cross-referenced Indian manuscript catalogue and collection finding aid; check rights by source", api: "link only" },
+  { name: "NGMCP Descriptive Catalogue (INDOLOGY mirror)", url: "https://indology.github.io/NGMCP-Descriptive-Catalogue/", role: "CC0 mirror of Nepal-German manuscript descriptions; titles, catalogue references and incipits/explicits where recorded", api: "downloadable CC0 repository; no bounded live lookup yet" },
   { name: "Muktabodha", url: "https://muktabodha.org/digital-library/", role: "Tantric texts and source catalogue", api: "link only" },
   { name: "GRETIL", url: "https://gretil.sub.uni-goettingen.de/", role: "Sanskrit electronic texts", api: "link only" },
   { name: "SARIT", url: "https://sarit.indology.info/", role: "critical and marked-up Indic editions", api: "link only" },

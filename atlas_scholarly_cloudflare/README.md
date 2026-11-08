@@ -35,6 +35,8 @@ Frozen relevance set: `eval/queries.json`, run with `node scripts/eval-relevance
 
 `find_witnesses.discoveryCoverage` reports the actual electronic-text and printed-scan provider status separately from the **unqueried physical-manuscript layer**. Its `completenessClaim` is always false: no records in SETI, for example, cannot establish that a work has no surviving manuscripts. Callers should display this distinction, not collapse it into a global "not found" result.
 
+**Provider feasibility (2026-11-08):** UCCIK publicly documents web searching and NCC IDs but no supported bulk export/API has been verified. indiccat provides browseable NCC work pages and source-specific data rights, but no stable JSON endpoint has been verified. The INDOLOGY NGMCP Descriptive Catalogue mirror is explicitly downloadable under CC0; its full index is not a bounded per-title Worker API, so it is presently a link-only source. A future approved indexing service or compact, version-pinned licensed index could expose it as a live provider. Do not fetch and scan the entire repository on every MCP request.
+
 ### v0.4 tools (dictionary, grammar, textual comparison)
 
 | Tool | Provider / verified contract | Notes |
