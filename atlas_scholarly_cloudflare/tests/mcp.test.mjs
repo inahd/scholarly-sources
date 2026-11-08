@@ -50,6 +50,7 @@ test("list_source_portals returns the directory with live/link-only markers", as
   assert.equal(b.status, "directory");
   assert.ok(b.sources.length >= 6);
   assert.ok(b.sources.some(s => s.name.includes("SETI") && s.api.startsWith("live")));
+  assert.ok(b.sources.some(s => s.name.includes("UCCIK") && s.api.includes("link only")));
   assert.ok(b.sources.every(s => s.url.startsWith("https://")));
 });
 
